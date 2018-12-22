@@ -11,7 +11,7 @@ pool:
 steps:
 - task: CMake@1
   inputs:
-    cmakeArgs: .. -DLLVM_ENABLE_PROJECTS=all -DCMAKE_BUILD_TYPE=Release
+    cmakeArgs: ../llvm -DLLVM_ENABLE_PROJECTS=all -DCMAKE_BUILD_TYPE=Release
 - task: CMake@1
   inputs:
     cmakeArgs: .. --build -DCMAKE_INSTALL_PREFIX=$(Build.SourcesDirectory)/install . --target install
