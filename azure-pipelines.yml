@@ -18,7 +18,7 @@ steps:
 - task: Bash@3
   inputs:
     targetType: inline
-    script: mkdir -p $(Build.BinariesDirectory)
+    script: mkdir -p $(Build.BinariesDirectory)/install
 - task: CMake@1
   inputs:
     cmakeArgs: $(Build.SourcesDirectory)/llvm --build -DCMAKE_INSTALL_PREFIX=$(Build.BinariesDirectory) . --target install
