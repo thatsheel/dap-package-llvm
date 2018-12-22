@@ -28,7 +28,7 @@ steps:
   timeoutInMinutes: 180
   inputs:
     workingDirectory: $(Build.BinariesDirectory)/build
-    cmakeArgs: -G Ninja --target install --build $(Build.BinariesDirectory)
+    cmakeArgs: -G Ninja --build . --target install
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(Build.BinariesDirectory)'
