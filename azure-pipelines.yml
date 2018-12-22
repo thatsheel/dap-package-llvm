@@ -21,6 +21,7 @@ steps:
     script: mkdir -p $(Build.BinariesDirectory)/build/install
 - task: CMake@1
   inputs:
+    workingDirectory: $(Build.BinariesDirectory)/build
     cmakeArgs: $(Build.SourcesDirectory)/llvm --build -DCMAKE_INSTALL_PREFIX=$(Build.BinariesDirectory) . --target install
 - task: ArchiveFiles@2
   inputs:
