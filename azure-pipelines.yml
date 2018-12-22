@@ -21,6 +21,7 @@ steps:
     targetType: inline
     script: mkdir -p $(Build.BinariesDirectory)/build/install
 - task: CMake@1
+  timeoutInMinutes: 180
   inputs:
     workingDirectory: $(Build.BinariesDirectory)
     cmakeArgs: --build $(Build.BinariesDirectory) --target install
