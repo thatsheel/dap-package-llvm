@@ -2,7 +2,6 @@
 # Build, test, and archive an Xcode workspace on macOS.
 # Add steps that install certificates, test, sign, and distribute an app, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/xcode
-
 trigger:
 - master
 pool:
@@ -25,7 +24,7 @@ steps:
     workingDirectory: $(Build.BinariesDirectory)/build
     cmakeArgs: -G Ninja $(Build.SourcesDirectory)/llvm -DCMAKE_INSTALL_PREFIX=$(Build.BinariesDirectory) -DLLVM_ENABLE_PROJECTS=all -DCMAKE_BUILD_TYPE=Release
 - task: CMake@1
-  timeoutInMinutes: 600
+  timeoutInMinutes: 0
   inputs:
     workingDirectory: $(Build.BinariesDirectory)/build
     cmakeArgs: --build . --target install
