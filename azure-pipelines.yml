@@ -14,6 +14,7 @@ steps:
     script: brew install swig
 - task: CMake@1
   inputs:
+    workingDirectory: $(Build.BinariesDirectory)
     cmakeArgs: $(Build.SourcesDirectory)/llvm -DLLVM_ENABLE_PROJECTS=all -DCMAKE_BUILD_TYPE=Release
 - task: Bash@3
   inputs:
@@ -21,8 +22,12 @@ steps:
     script: mkdir -p $(Build.BinariesDirectory)/build/install
 - task: CMake@1
   inputs:
+    workingDirectory: $(Build.BinariesDirectory)
+    cmakeArgs: -DCMAKE_INSTALL_PREFIX=$(Build.BinariesDirectory) -P cmake_install.cmake
+- task: CMake@1
+  inputs:
     workingDirectory: $(Build.BinariesDirectory)/build
-    cmakeArgs: $(Build.SourcesDirectory)/llvm --build -DCMAKE_INSTALL_PREFIX=$(Build.BinariesDirectory) . --target install
+    cmakeArgs: --build $(Build.BinariesDirectory) --target install
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(Build.BinariesDirectory)'
