@@ -1,46 +1,44 @@
-# Xcode
-# Build, test, and archive an Xcode workspace on macOS.
-# Add steps that install certificates, test, sign, and distribute an app, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/xcode
-trigger:
-- master
-pool:
-  vmImage: 'macOS-10.13'
-steps:
-- task: Bash@3
-  inputs:
-    targetType: inline
-    script: brew install swig
-- task: Bash@3
-  inputs:
-    targetType: inline
-    script: brew install ninja
-- task: Bash@3
-  inputs:
-    targetType: inline
-    script: mkdir -p $(Build.BinariesDirectory)/build/install
-- task: CMake@1
-  inputs:
-    workingDirectory: $(Build.BinariesDirectory)/build
-    cmakeArgs: -G Ninja $(Build.SourcesDirectory)/llvm -DCMAKE_INSTALL_PREFIX=$(Build.BinariesDirectory) -DLLVM_INCLUDE_EXAMPLES=OFF -DLLVM_INCLUDE_TESTS=OFF -DLLVM_INCLUDE_BENCHMARKS=OFF -DLLVM_ENABLE_ASSERTIONS=OFF -DLLVM_TARGETS_TO_BUILD=x86_64 -DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi;lldb;compiler-rt;lld;polly" -DCOMPILER_RT_INCLUDE_TESTS=OFF -DLLVM_ENABLE_PROJECTS=all -DCMAKE_BUILD_TYPE=Release
-- task: CMake@1
-  timeoutInMinutes: 0
-  inputs:
-    workingDirectory: $(Build.BinariesDirectory)/build
-    cmakeArgs: --build . --target install
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(Build.BinariesDirectory)'
-    includeRootFolder: true
-    archiveType: 'tar'
-    tarCompression: 'gz'
-    archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).tar.gz
-    replaceExistingArchive: true
-- task: UniversalPackages@0
-  displayName: Universal Publish
-  inputs:
-    command: publish
-    publishDirectory: '$(Build.ArtifactStagingDirectory)'
-    vstsFeedPublish: 'dap-package-llvm'
-    vstsFeedPackagePublish: 'dap-llvm'
-    packagePublishDescription: '<Package description>'
+jobs:
+- job: Build
+  trigger:
+  - master
+  pool:
+    vmImage: 'macOS-10.13'
+  steps:
+  - task: Bash@3
+    inputs:
+      targetType: inline
+      script: brew install swig
+  - task: Bash@3
+    inputs:
+      targetType: inline
+      script: brew install ninja
+  - task: Bash@3
+    inputs:
+      targetType: inline
+      script: mkdir -p $(Build.BinariesDirectory)/build/install
+  - task: CMake@1
+    inputs:
+      workingDirectory: $(Build.BinariesDirectory)/build
+      cmakeArgs: -G Ninja $(Build.SourcesDirectory)/llvm -DCMAKE_INSTALL_PREFIX=$(Build.BinariesDirectory) -DLLVM_INCLUDE_EXAMPLES=OFF -DLLVM_INCLUDE_TESTS=OFF -DLLVM_INCLUDE_BENCHMARKS=OFF -DLLVM_ENABLE_ASSERTIONS=OFF -DLLVM_ENABLE_PROJECTS="clang;libcxx;libcxxabi;lldb;compiler-rt;lld;polly" -DCOMPILER_RT_INCLUDE_TESTS=OFF -DLLVM_ENABLE_PROJECTS=all -DCMAKE_BUILD_TYPE=Release
+  - task: CMake@1
+    timeoutInMinutes: 360
+    inputs:
+      workingDirectory: $(Build.BinariesDirectory)/build
+      cmakeArgs: --build . --target install
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(Build.BinariesDirectory)'
+      includeRootFolder: true
+      archiveType: 'tar'
+      tarCompression: 'gz'
+      archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).tar.gz
+      replaceExistingArchive: true
+  - task: UniversalPackages@0
+    displayName: Universal Publish
+    inputs:
+      command: publish
+      publishDirectory: '$(Build.ArtifactStagingDirectory)'
+      vstsFeedPublish: 'dap-package-llvm'
+      vstsFeedPackagePublish: 'dap-llvm'
+      packagePublishDescription: '<Package description>'
