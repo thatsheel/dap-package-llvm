@@ -16,6 +16,10 @@ jobs:
     inputs:
       targetType: inline
       script: mkdir -p $(Build.BinariesDirectory)/build/install
+  - task: Bash@3
+    inputs:
+      targetType: inline
+      script: xcode-select -switch /Applications/Xcode_10.0.0.app/Contents/Developer
   - task: CMake@1
     inputs:
       workingDirectory: $(Build.BinariesDirectory)/build
