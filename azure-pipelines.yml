@@ -2,7 +2,7 @@ jobs:
 - job: Build
   timeoutInMinutes: 360
   pool:
-    vmImage: 'macOS-10.14'
+    vmImage: 'macOS-10.13'
   steps:
   - task: Bash@3
     inputs:
